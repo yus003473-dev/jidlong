@@ -1,15 +1,15 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Product, Customer, Order, ActionLog, AppBackup } from './types';
-import { ProductManager } from './components/ProductManager';
-import { OrderManager } from './components/OrderManager';
-import { CustomerManager } from './components/CustomerManager';
+import { Product, Customer, Order, ActionLog, AppBackup } from './types.ts';
+import { ProductManager } from './components/ProductManager.tsx';
+import { OrderManager } from './components/OrderManager.tsx';
+import { CustomerManager } from './components/CustomerManager.tsx';
 import { 
   LayoutDashboard, ShoppingBag, Users, Monitor, HardDrive, 
   DownloadCloud, Save, Upload, ShieldCheck, Database, HelpCircle, X, Terminal, Globe, Github, Settings, MousePointer2
 } from 'lucide-react';
 
-const APP_VERSION = "2.5.0-Native";
+const APP_VERSION = "2.5.1-Stable";
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'orders' | 'products' | 'customers'>('orders');
@@ -23,13 +23,17 @@ const App: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const savedProducts = localStorage.getItem('psh_products');
-    const savedCustomers = localStorage.getItem('psh_customers');
-    const savedOrders = localStorage.getItem('psh_orders');
-    
-    if (savedProducts) setProducts(JSON.parse(savedProducts));
-    if (savedCustomers) setCustomers(JSON.parse(savedCustomers));
-    if (savedOrders) setOrders(JSON.parse(savedOrders));
+    try {
+      const savedProducts = localStorage.getItem('psh_products');
+      const savedCustomers = localStorage.getItem('psh_customers');
+      const savedOrders = localStorage.getItem('psh_orders');
+      
+      if (savedProducts) setProducts(JSON.parse(savedProducts));
+      if (savedCustomers) setCustomers(JSON.parse(savedCustomers));
+      if (savedOrders) setOrders(JSON.parse(savedOrders));
+    } catch (e) {
+      console.error("Local Storage 损坏", e);
+    }
 
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
@@ -101,7 +105,6 @@ const App: React.FC = () => {
     <div className="min-h-screen flex flex-col md:flex-row bg-slate-50">
       <input type="file" ref={fileInputRef} onChange={handleRestore} className="hidden" accept=".json" />
       
-      {/* 发布指南弹窗 */}
       {showGuide && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
@@ -116,56 +119,18 @@ const App: React.FC = () => {
             <div className="p-8 space-y-8 overflow-y-auto max-h-[70vh] custom-scrollbar">
               <section>
                 <h4 className="flex items-center gap-2 font-bold text-slate-800 mb-4">
-                  <Github className="w-4 h-4 text-slate-900" /> GitHub Pages 极速发布流程
+                  <Github className="w-4 h-4 text-slate-900" /> GitHub Pages 部署注意点
                 </h4>
                 <div className="space-y-4">
-                  <div className="flex gap-4">
-                    <div className="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center shrink-0 font-bold text-xs">1</div>
-                    <div>
-                      <p className="font-bold text-slate-800 text-sm">上传代码</p>
-                      <p className="text-xs text-slate-500">在 GitHub 新建仓库，将本项目所有文件直接上传到根目录。</p>
-                    </div>
+                  <div className="bg-amber-50 border border-amber-200 p-4 rounded-xl text-amber-800 text-xs leading-relaxed">
+                    <strong>重要：</strong> 如果部署到 GitHub 子目录（如 /repo-name/），请确保 index.html 中的路径均为相对路径（已在当前版本优化）。
                   </div>
-
-                  <div className="flex gap-4">
-                    <div className="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center shrink-0 font-bold text-xs">2</div>
-                    <div>
-                      <p className="font-bold text-slate-800 text-sm">进入设置 (Settings)</p>
-                      <p className="text-xs text-slate-500">点击仓库顶部的 <b>Settings</b> ⚙️ 选项卡（通常在最右侧）。</p>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-4">
-                    <div className="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center shrink-0 font-bold text-xs">3</div>
-                    <div className="flex-1 bg-indigo-50 p-4 rounded-xl border border-indigo-100">
-                      <p className="font-bold text-indigo-800 text-sm mb-2">配置 Pages 服务</p>
-                      <div className="space-y-2 text-xs text-indigo-700">
-                        <p className="flex items-center gap-2"><MousePointer2 className="w-3 h-3" /> 点击左侧菜单栏中的 <b>Pages</b> 选项。</p>
-                        <p className="flex items-center gap-2"><MousePointer2 className="w-3 h-3" /> 找到中间的 <b>Build and deployment</b> (构建和部署) 区块。</p>
-                        <p className="flex items-center gap-2"><MousePointer2 className="w-3 h-3" /> 在 <b>Branch</b> 下拉框选择 <b>main</b> (或 master)。</p>
-                        <p className="flex items-center gap-2 font-bold"><MousePointer2 className="w-3 h-3" /> 点击旁边的 <b>Save</b> (保存) 按钮。</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-4">
-                    <div className="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0 font-bold text-xs">4</div>
-                    <div>
-                      <p className="font-bold text-slate-800 text-sm">获取链接</p>
-                      <p className="text-xs text-slate-500">刷新页面，上方会出现绿色横条提示你的网站已发布，点击链接即可访问。</p>
-                    </div>
-                  </div>
+                  <p className="text-sm text-slate-600">直接将所有代码上传到仓库根目录，并在 Settings -> Pages 中开启服务即可。</p>
                 </div>
               </section>
-
-              <div className="bg-blue-50 border border-blue-200 rounded-2xl p-4">
-                <p className="text-xs text-blue-700 leading-relaxed">
-                  <b>提示：</b> 发布完成后，任何人打开该链接都可以使用工具。由于数据保存在各自浏览器内，您不用担心自己的客户信息会被其他使用者看到。
-                </p>
-              </div>
             </div>
             <div className="p-6 bg-slate-50 border-t border-slate-100 text-right">
-              <button onClick={() => setShowGuide(false)} className="px-8 py-2.5 bg-slate-900 text-white rounded-xl font-bold text-sm shadow-lg hover:bg-slate-800 transition-all">关闭说明</button>
+              <button onClick={() => setShowGuide(false)} className="px-8 py-2.5 bg-slate-900 text-white rounded-xl font-bold text-sm shadow-lg hover:bg-slate-800 transition-all">确定</button>
             </div>
           </div>
         </div>
@@ -178,7 +143,7 @@ const App: React.FC = () => {
           </div>
           <div>
             <h1 className="font-bold text-lg leading-tight">女王接龙</h1>
-            <p className="text-[10px] text-indigo-400 uppercase tracking-widest font-bold">本地原生版</p>
+            <p className="text-[10px] text-indigo-400 uppercase tracking-widest font-bold">AI 驱动版</p>
           </div>
         </div>
 
@@ -202,40 +167,18 @@ const App: React.FC = () => {
         </nav>
 
         <div className="mt-auto space-y-3 pt-6 border-t border-slate-800">
-          <button 
-            onClick={() => setShowGuide(true)}
-            className="w-full flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-indigo-400 py-3 rounded-xl text-xs font-bold transition-all"
-          >
-            <HelpCircle className="w-4 h-4" /> 发布与分发指引
+          <button onClick={() => setShowGuide(true)} className="w-full flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-indigo-400 py-3 rounded-xl text-xs font-bold transition-all">
+            <HelpCircle className="w-4 h-4" /> 部署指引
           </button>
-
-          {isInstallable && (
-            <button 
-              onClick={handleInstall} 
-              className="w-full flex items-center justify-center gap-2 bg-indigo-500 hover:bg-indigo-400 text-white py-3 rounded-xl text-xs font-bold transition-all shadow-lg animate-pulse"
-            >
-              <DownloadCloud className="w-4 h-4" /> 安装到电脑桌面
-            </button>
-          )}
-
           <div className="grid grid-cols-2 gap-2">
             <button onClick={exportBackup} className="flex flex-col items-center p-2.5 bg-slate-800 rounded-xl hover:bg-slate-700 transition-colors">
               <Save className="w-4 h-4 text-indigo-400" />
-              <span className="text-[10px] mt-1 text-slate-400 font-bold">备份数据</span>
+              <span className="text-[10px] mt-1 text-slate-400 font-bold">备份</span>
             </button>
             <button onClick={() => fileInputRef.current?.click()} className="flex flex-col items-center p-2.5 bg-slate-800 rounded-xl hover:bg-slate-700 transition-colors">
               <Upload className="w-4 h-4 text-emerald-400" />
-              <span className="text-[10px] mt-1 text-slate-400 font-bold">还原数据</span>
+              <span className="text-[10px] mt-1 text-slate-400 font-bold">还原</span>
             </button>
-          </div>
-
-          <div className="bg-slate-800/50 rounded-2xl p-4 border border-slate-700/50">
-            <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase mb-2">
-              <ShieldCheck className="w-3.5 h-3.5 text-green-500" /> 安全脱机运行
-            </div>
-            <div className="flex items-center gap-2 text-[10px] text-slate-500 leading-tight">
-              <Database className="w-3 h-3" /> 数据状态: 仅本地可见
-            </div>
           </div>
         </div>
       </aside>
@@ -244,16 +187,12 @@ const App: React.FC = () => {
         <header className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
             <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">
-              {activeTab === 'orders' ? '订单管理' : activeTab === 'products' ? '商品配置' : '地址管理'}
+              {activeTab === 'orders' ? '订单中心' : activeTab === 'products' ? '商品库' : '地址簿'}
             </h2>
-            <div className="flex items-center gap-2 mt-1">
-               <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[10px] font-bold rounded">100% 离线</span>
-               <span className="text-slate-400 text-xs">V{APP_VERSION}</span>
+            <div className="flex items-center gap-2 mt-1 text-slate-400 text-xs">
+               <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[10px] font-bold rounded">100% 本地运行</span>
+               <span>V{APP_VERSION}</span>
             </div>
-          </div>
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 rounded-lg">
-             <HardDrive className="w-4 h-4 text-slate-400" />
-             <span className="text-[10px] font-bold text-slate-600 uppercase">私域本地引擎</span>
           </div>
         </header>
 

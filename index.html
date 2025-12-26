@@ -14,7 +14,7 @@
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
-        
+        #error-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); color: white; padding: 20px; z-index: 9999; font-family: monospace; }
         @media print {
             .no-print { display: none !important; }
             .print-only { display: block !important; }
@@ -35,6 +35,23 @@
 </head>
 <body class="bg-slate-50 text-slate-900">
     <div id="root"></div>
+    <div id="error-overlay">
+      <h1 style="color: #ff4d4d">脚本运行错误:</h1>
+      <pre id="error-content"></pre>
+      <button onclick="location.reload()" style="margin-top: 20px; padding: 10px 20px; background: white; color: black; border-radius: 5px;">重新加载</button>
+    </div>
+    
+    <script>
+      // 捕获运行时错误并显示在屏幕上
+      window.onerror = function(msg, url, lineNo, columnNo, error) {
+        const overlay = document.getElementById('error-overlay');
+        const content = document.getElementById('error-content');
+        overlay.style.display = 'block';
+        content.textContent = `消息: ${msg}\n文件: ${url}\n行号: ${lineNo}:${columnNo}\n堆栈: ${error?.stack}`;
+        return false;
+      };
+    </script>
+
     <script type="module" src="index.tsx"></script>
     <script>
       if ('serviceWorker' in navigator) {
