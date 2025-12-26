@@ -1,0 +1,26 @@
+
+{
+  "name": "queen-jielong-helper",
+  "version": "2.5.0",
+  "description": "女王的接龙小助手 - 脱机专业版",
+  "main": "main.js",
+  "author": "QueenHelper",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "dependencies": {
+    "lucide-react": "^0.562.0"
+  },
+  "devDependencies": {
+    "electron": "^25.0.0",
+    "electron-builder": "^24.4.0"
+  },
+  "build": {
+    "appId": "com.queen.helper",
+    "win": {
+      "target": "portable",
+      "icon": "https://cdn-icons-png.flaticon.com/512/3081/3081559.png"
+    }
+  }
+}
