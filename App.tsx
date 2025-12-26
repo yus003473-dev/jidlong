@@ -6,7 +6,7 @@ import { OrderManager } from './components/OrderManager';
 import { CustomerManager } from './components/CustomerManager';
 import { 
   LayoutDashboard, ShoppingBag, Users, Monitor, HardDrive, 
-  DownloadCloud, Save, Upload, ShieldCheck, Database, HelpCircle, X, Terminal, Globe, Github
+  DownloadCloud, Save, Upload, ShieldCheck, Database, HelpCircle, X, Terminal, Globe, Github, Settings, MousePointer2
 } from 'lucide-react';
 
 const APP_VERSION = "2.5.0-Native";
@@ -107,7 +107,7 @@ const App: React.FC = () => {
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
             <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
               <h3 className="text-xl font-bold flex items-center gap-2">
-                <DownloadCloud className="w-5 h-5 text-indigo-600" /> 应用分发与发布说明
+                <DownloadCloud className="w-5 h-5 text-indigo-600" /> 应用发布指引
               </h3>
               <button onClick={() => setShowGuide(false)} className="p-2 hover:bg-slate-200 rounded-full transition-colors">
                 <X className="w-5 h-5 text-slate-500" />
@@ -115,42 +115,52 @@ const App: React.FC = () => {
             </div>
             <div className="p-8 space-y-8 overflow-y-auto max-h-[70vh] custom-scrollbar">
               <section>
-                <h4 className="flex items-center gap-2 font-bold text-slate-800 mb-3">
-                  <Github className="w-4 h-4 text-slate-900" /> 方式一：免费发布到 GitHub Pages
+                <h4 className="flex items-center gap-2 font-bold text-slate-800 mb-4">
+                  <Github className="w-4 h-4 text-slate-900" /> GitHub Pages 极速发布流程
                 </h4>
-                <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm text-slate-600 space-y-2">
-                  <p>1. 创建 GitHub 仓库并上传本程序所有文件。</p>
-                  <p>2. 在仓库 <b>Settings -> Pages</b> 中开启服务。</p>
-                  <p>3. 任何人访问生成的网址，即可通过浏览器直接使用并安装到桌面。</p>
-                  <p className="text-indigo-600 font-bold">优点：零成本，全球可用，自动获得离线运行能力。</p>
+                <div className="space-y-4">
+                  <div className="flex gap-4">
+                    <div className="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center shrink-0 font-bold text-xs">1</div>
+                    <div>
+                      <p className="font-bold text-slate-800 text-sm">上传代码</p>
+                      <p className="text-xs text-slate-500">在 GitHub 新建仓库，将本项目所有文件直接上传到根目录。</p>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4">
+                    <div className="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center shrink-0 font-bold text-xs">2</div>
+                    <div>
+                      <p className="font-bold text-slate-800 text-sm">进入设置 (Settings)</p>
+                      <p className="text-xs text-slate-500">点击仓库顶部的 <b>Settings</b> ⚙️ 选项卡（通常在最右侧）。</p>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4">
+                    <div className="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center shrink-0 font-bold text-xs">3</div>
+                    <div className="flex-1 bg-indigo-50 p-4 rounded-xl border border-indigo-100">
+                      <p className="font-bold text-indigo-800 text-sm mb-2">配置 Pages 服务</p>
+                      <div className="space-y-2 text-xs text-indigo-700">
+                        <p className="flex items-center gap-2"><MousePointer2 className="w-3 h-3" /> 点击左侧菜单栏中的 <b>Pages</b> 选项。</p>
+                        <p className="flex items-center gap-2"><MousePointer2 className="w-3 h-3" /> 找到中间的 <b>Build and deployment</b> (构建和部署) 区块。</p>
+                        <p className="flex items-center gap-2"><MousePointer2 className="w-3 h-3" /> 在 <b>Branch</b> 下拉框选择 <b>main</b> (或 master)。</p>
+                        <p className="flex items-center gap-2 font-bold"><MousePointer2 className="w-3 h-3" /> 点击旁边的 <b>Save</b> (保存) 按钮。</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4">
+                    <div className="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0 font-bold text-xs">4</div>
+                    <div>
+                      <p className="font-bold text-slate-800 text-sm">获取链接</p>
+                      <p className="text-xs text-slate-500">刷新页面，上方会出现绿色横条提示你的网站已发布，点击链接即可访问。</p>
+                    </div>
+                  </div>
                 </div>
               </section>
 
-              <section>
-                <h4 className="flex items-center gap-2 font-bold text-slate-800 mb-3">
-                  <Terminal className="w-4 h-4 text-indigo-500" /> 方式二：打包为本地 EXE
-                </h4>
-                <div className="bg-slate-900 rounded-xl p-4 font-mono text-xs text-indigo-300 space-y-2">
-                  <p># 确保已安装 Node.js 后执行：</p>
-                  <p>1. <span className="text-white">npm install</span> <span className="text-slate-500">// 安装环境</span></p>
-                  <p>2. <span className="text-white">npm run build</span> <span className="text-slate-500">// 生成安装包</span></p>
-                  <p>3. 在 <span className="text-emerald-400">dist/</span> 目录获取 exe 文件分发给用户。</p>
-                </div>
-              </section>
-
-              <section>
-                <h4 className="flex items-center gap-2 font-bold text-slate-800 mb-3">
-                  <Globe className="w-4 h-4 text-emerald-500" /> 方式三：直接发送 ZIP 包
-                </h4>
-                <p className="text-sm text-slate-600 leading-relaxed">
-                  您可以将本文件夹压缩为 ZIP 发给他人。对方解压后双击 <code className="bg-slate-100 px-1 rounded">index.html</code> 即可直接运行。
-                </p>
-              </section>
-
-              <div className="bg-blue-50 border border-blue-200 rounded-2xl p-4 flex gap-3">
-                <ShieldCheck className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
+              <div className="bg-blue-50 border border-blue-200 rounded-2xl p-4">
                 <p className="text-xs text-blue-700 leading-relaxed">
-                  <b>关于数据安全：</b> 无论采用哪种发布方式，本程序的所有数据（商品、客户、订单）均<b>仅存储在用户自己的电脑浏览器中</b>，绝不上传到任何服务器，隐私安全 100% 掌握。
+                  <b>提示：</b> 发布完成后，任何人打开该链接都可以使用工具。由于数据保存在各自浏览器内，您不用担心自己的客户信息会被其他使用者看到。
                 </p>
               </div>
             </div>
@@ -196,7 +206,7 @@ const App: React.FC = () => {
             onClick={() => setShowGuide(true)}
             className="w-full flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-indigo-400 py-3 rounded-xl text-xs font-bold transition-all"
           >
-            <HelpCircle className="w-4 h-4" /> 发布与分发说明
+            <HelpCircle className="w-4 h-4" /> 发布与分发指引
           </button>
 
           {isInstallable && (
